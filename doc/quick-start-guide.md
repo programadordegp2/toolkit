@@ -97,6 +97,36 @@ $ bin/up
 You should see some log output from the docker containers, indicating that the containers are running. 
 If you press `CTRL-C` at the terminal, the services will shut down. You can start them up again (without attaching to the log output) by running `bin/start`. More generally, you can run `bin/docker-compose` to control the `docker compose` system directly, if you find that the convenience scripts don't cover your use-case.
 
+## Installing TexLive Full
+Since a minimal install is done using this instructions, further packages are needed to compile the documents. This section explains how to install al packages.
+
+From the `overleaf-toolkit` directory mentioned in previous steps, run the following command to access the Sharelatex container:  
+```bash
+sudo bin/shell
+```  
+We are now inside the container's shell. We can check the current version of the packages using the following command:  
+```bash
+tlmgr --version
+```  
+Next, run the following command to install all the libraries:  
+```bash
+tlmgr install scheme-full
+```  
+This will install several packages, so it might take some time. Once finished, we can exit the container shell using `Ctrl D` or the `exit` command.  
+
+The last step is to save all changes in the container.  
+First, we need to know the version number, which can be done with the command:  
+```bash
+cat config/version
+```  
+Then, we update the version in the container using:  
+```bash
+sudo docker commit sharelatex sharelatex/sharelatex:VERSION-with-texlive-full
+```  
+Next, update the `config/version` file with Nano or your favorite editor to include the text `with-texlive-full` alongside the version number so it looks like ```X.X.X-with-texlive-full```.  
+
+Finally, execute the sequence `sudo bin/up`, then stop the service with `Ctrl C`, and then `sudo bin/start`, as in previous steps, to recreate the Docker container, this time with all the packages installed.  
+
 
 ## Create the first admin account
 
